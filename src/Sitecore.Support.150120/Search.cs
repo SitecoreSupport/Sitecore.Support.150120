@@ -342,7 +342,7 @@ namespace Sitecore.Support.ItemBuckets.Services
                     locationFilter = HttpUtility.ParseQueryString(urlReferrer.Query)["id"];
                 }
 
-                locationFilter = locationFilter ?? httpRequest.Form["StartSearchLocation"] ?? httpRequest.QueryString["StartSearchLocation"];
+                locationFilter = httpRequest.Form["StartSearchLocation"] ?? httpRequest.QueryString["StartSearchLocation"] ?? locationFilter;
 
                 if (string.IsNullOrEmpty(locationFilter))
                 {
