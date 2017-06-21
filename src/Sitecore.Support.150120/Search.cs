@@ -328,5 +328,40 @@ namespace Sitecore.Support.ItemBuckets.Services
                 ProcessCachedItemsMethodInfo.Invoke(this,
                     new object[] {items, startLocationItem, showFieldsQuick, enumerableCollextion});
         }
+
+        public new string LocationFilter
+        {
+            get
+            {
+                string locationFilter = null;
+
+                var httpRequest = HttpContext.Current.Request;
+                var urlReferrer = httpRequest.UrlReferrer;
+                if (urlReferrer != null)
+                {
+                    locationFilter = HttpUtility.ParseQueryString(urlReferrer.Query)["id"];
+                }
+
+                locationFilter = locationFilter ?? httpRequest.Form["StartSearchLocation"] ?? httpRequest.QueryString["StartSearchLocation"];
+
+                if (string.IsNullOrEmpty(locationFilter))
+                {
+                    return ItemIDs.RootID.ToString();
+                }
+
+                Data.ID id;
+                try
+                {
+                    id = Data.ID.Parse(locationFilter);
+                }
+                catch (Exception)
+                {
+                    Log.Error("Value of the StartSearchLocation '" + locationFilter + "' is not a valid GUID. '" + ItemIDs.RootID + "' will be used instead.", this);
+                    id = ItemIDs.RootID;
+                }
+
+                return id.ToString();
+            }
+        }
     }
 }
